@@ -10,9 +10,19 @@
             block color="primary" class="mb-3"
             :disabled="!isAdmin"
             @click="goAddUser"
+            prepend-icon="mdi-plus"
           >
             Agregar usuario
           </v-btn>
+
+          <v-btn
+            block color="secondary" class="mb-3"
+            prepend-icon="mdi-clipboard-text"
+            @click="goTasks"
+          >
+            Tareas
+          </v-btn>
+
 
           <v-text-field
             v-model="search"
@@ -49,12 +59,14 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import UserList from '@/views/UserList.vue'
+import UserList from '@/views/UsersList.vue'
 
 type User = { id:number; nombre:string; email:string; rol:'admin'|'usuario' }
 
 const router = useRouter()
 const search = ref('')
+const goTasks = () => router.push('/tareas')
+
 
 const user = ref<User | null>(null)
 onMounted(() => {

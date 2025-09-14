@@ -1,6 +1,6 @@
 <template>
   <v-data-table
-    :items="filtered"
+    :items="decorated"
     :headers="headers"
     :loading="loading"
     class="elevation-1"
@@ -27,7 +27,7 @@ const headers = [
   { title: 'Nombre', value: 'nombre' },
   { title: 'Email',  value: 'email' },
   { title: 'Rol',    value: 'rol' },
-  { title: 'Creado', value: 'created_at' }, // <- NUEVA COLUMNA
+  { title: 'Creado', value: 'created_at' },
 ]
 
 const fetchUsers = async () => {
@@ -42,10 +42,30 @@ const fetchUsers = async () => {
 
 onMounted(fetchUsers)
 
-const filtered = computed(() => {
+function formatDate(dateStr?: string) {
+  if (!dateStr) return ''
+  try {
+    return new Intl.DateTimeFormat('es-GT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(new Date(dateStr))
+  } catch {
+    return dateStr
+  }
+}
+
+const decorated = computed(() => {
   const q = (props.searchTerm || '').toLowerCase().trim()
-  if (!q) return items.value
-  return items.value.filter(u =>
+  let list = items.value.map(u => ({
+    ...u,
+    created_at: formatDate(u.created_at),
+  }))
+  if (!q) return list
+  return list.filter(u =>
     u.nombre.toLowerCase().includes(q) ||
     u.email.toLowerCase().includes(q)  ||
     u.rol.toLowerCase().includes(q)    ||
