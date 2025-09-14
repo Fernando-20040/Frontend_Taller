@@ -6,7 +6,6 @@
         <v-card class="pa-4">
           <div class="text-subtitle-1 mb-2">Acciones</div>
 
-          <!-- Agregar usuario: habilitado solo si es admin -->
           <v-btn
             block color="primary" class="mb-3"
             :disabled="!isAdmin"
@@ -15,7 +14,6 @@
             Agregar usuario
           </v-btn>
 
-          <!-- Buscar (filtra en UsersList) -->
           <v-text-field
             v-model="search"
             label="Buscar usuarios"
@@ -41,8 +39,7 @@
       <v-col cols="12" md="9">
         <v-card class="pa-4">
           <div class="text-h6 mb-4">Usuarios</div>
-          <!-- Componente que pinta la tabla -->
-          <UsersList :search-term="search" />
+          <UserList :search-term="search" />
         </v-card>
       </v-col>
     </v-row>
@@ -52,7 +49,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import UsersList from '@/views/UsersList.vue'
+import UserList from '@/views/UserList.vue'
 
 type User = { id:number; nombre:string; email:string; rol:'admin'|'usuario' }
 

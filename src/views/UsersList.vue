@@ -15,10 +15,11 @@
 import { ref, onMounted, computed } from 'vue'
 import api from '@/services/api'
 
-type Usuario = { id:number; nombre:string; email:string; rol:'admin'|'usuario' }
+type Usuario = {
+  id:number; nombre:string; email:string; rol:'admin'|'usuario'; created_at?: string
+}
 
 const props = defineProps<{ searchTerm?: string }>()
-
 const items = ref<Usuario[]>([])
 const loading = ref(false)
 
@@ -26,9 +27,9 @@ const headers = [
   { title: 'Nombre', value: 'nombre' },
   { title: 'Email',  value: 'email' },
   { title: 'Rol',    value: 'rol' },
+  { title: 'Creado', value: 'created_at' }, // <- NUEVA COLUMNA
 ]
 
-// carga desde la API
 const fetchUsers = async () => {
   loading.value = true
   try {
@@ -47,10 +48,8 @@ const filtered = computed(() => {
   return items.value.filter(u =>
     u.nombre.toLowerCase().includes(q) ||
     u.email.toLowerCase().includes(q)  ||
-    u.rol.toLowerCase().includes(q)
+    u.rol.toLowerCase().includes(q)    ||
+    (u.created_at || '').toLowerCase().includes(q)
   )
 })
-
-// recargar si quieres al cambiar término (opcional)
-/* watch(() => props.searchTerm, () => { ... }) */
 </script>
