@@ -63,8 +63,14 @@
       <!-- Tabla -->
       <v-col cols="12" md="7">
         <div class="d-flex justify-end mb-2">
-          <v-btn color="teal" prepend-icon="mdi-download" @click="downloadPending">
-            DESCARGAR FORMULARIO
+          <!-- Tu botón original: exporta PENDIENTES -->
+          <v-btn color="primary" prepend-icon="mdi-download" class="mr-2" @click="downloadPending">
+            DESCARGAR PENDIENTES
+          </v-btn>
+
+          <!-- NUEVO BOTÓN: exporta TODAS -->
+          <v-btn color="teal" prepend-icon="mdi-download" @click="downloadAll">
+            DESCARGAR TODAS
           </v-btn>
         </div>
         <v-data-table
@@ -199,6 +205,30 @@ async function downloadPending() {
     URL.revokeObjectURL(url)
   } catch {
     alert('No se pudo descargar el reporte (¿endpoint no implementado?).')
+  }
+}
+
+async function downloadAll() {
+  try {
+    const res = await api.get('/tareas/reporte', {
+      // puedes omitir params y tu backend exporta todas por defecto,
+      // pero lo envío explícito por claridad:
+      params: { estado: 'todas' },
+      responseType: 'blob',
+    })
+    const blob = new Blob([res.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `todas_las_tareas_${new Date().toISOString().slice(0, 10)}.xlsx`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  } catch {
+    alert('No se pudo descargar el reporte de TODAS las tareas.')
   }
 }
 

@@ -6,9 +6,12 @@
         <v-card class="pa-4">
           <div class="text-subtitle-1 mb-2">Acciones</div>
 
+          <!-- AHORA SE OCULTA para no-admin -->
           <v-btn
-            block color="primary" class="mb-3"
-            :disabled="!isAdmin"
+            v-if="isAdmin"
+            block
+            color="primary"
+            class="mb-3"
             @click="goAddUser"
             prepend-icon="mdi-plus"
           >
@@ -22,7 +25,6 @@
           >
             Tareas
           </v-btn>
-
 
           <v-text-field
             v-model="search"
@@ -67,7 +69,6 @@ const router = useRouter()
 const search = ref('')
 const goTasks = () => router.push('/tareas')
 
-
 const user = ref<User | null>(null)
 onMounted(() => {
   const raw = localStorage.getItem('user')
@@ -84,5 +85,3 @@ const logout = () => {
   router.push('/login')
 }
 </script>
-
-   <!-- prueba -->
