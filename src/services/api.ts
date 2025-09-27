@@ -1,7 +1,6 @@
 import axios from 'axios'
 import router from '@/router'
 
-// Detecta si estamos en entorno local
 const hostname = location.hostname
 const isLocal =
   hostname === 'localhost' ||
@@ -29,20 +28,16 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`
 
   // ---- Multitenant (solo dev / helpers) ----
-  // 1) Si usas empresa1.localhost → X-Tenant: empresa1
   let tenant: string | null = null
   const parts = hostname.split('.')
   if (hostname.endsWith('.localhost') || hostname.endsWith('.test')) {
-    // ej: empresa1.localhost → ["empresa1","localhost"]
     tenant = parts.length >= 2 ? parts[0] : null
   }
-  // 2) Permite override por query (?tenant=empresa1) o env local (VITE_TENANT)
   tenant = new URLSearchParams(location.search).get('tenant') || tenant || (import.meta as any).env.VITE_TENANT || null
 
   if (tenant) {
     (config.headers as any)['X-Tenant'] = tenant
   }
-  // ------------------------------------------
 
   return config
 })
